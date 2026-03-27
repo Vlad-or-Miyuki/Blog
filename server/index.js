@@ -14,6 +14,8 @@ const PORT = process.env.PORT
 const DB_USER = process.env.DB_USER
 const DB_PASSWORD = process.env.DB_PASSWORD
 const DB_NAME = process.env.DB_NAME
+const DB_URI_CLOUD = process.env.DB_URI_CLOUD // MongoDB Atlas
+const DB_URI_LOCAL = process.env.DB_URI_LOCAL // MongoDB Локальная
 
 // Запрос на главную страницу и ответ
 app.get('/', (request, response) => {
@@ -30,9 +32,7 @@ app.use('/api/auth', authRoute)
 
 async function start() {
     try {
-        await mongoose.connect(
-            `mongodb+srv://${DB_USER}:${DB_PASSWORD}@cluster0.h9j5vam.mongodb.net/${DB_NAME}?appName=Cluster0`,
-        );
+        await mongoose.connect(process.env.DB_URI_LOCAL); // заменять тут либо DB_URI_CLOUD || DB_URI_LOCAL
         console.log('\x1b[32m%s\x1b[0m', '✓ MongoDB connected'); // красивый вывод в консоль
         
         app.listen(PORT, () => 

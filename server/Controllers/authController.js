@@ -53,11 +53,12 @@ export const login = async (request, response) => {
             })
         }
         
-        const token = jwt.sign({
+        const token = jwt.sign(
+        {
             id: user.id,
         },
         process.env.JWT_SECRET,
-        {expiresIn: '30d'},
+        { expiresIn: '30d' },
     )
 
     response.json({
@@ -73,6 +74,28 @@ export const login = async (request, response) => {
 // Get Me
 export const getMe = async (request, response) => {
     try {
-        
-    } catch (error) {}
+        const user = await User.findById(request.userId)
+
+        if (!user) {
+            return response.json({
+                message: 'Такого пользователя не существует'
+            })
+        }
+
+        const token = jwt.sign(
+            {
+                id: user.id,
+            },
+            process.env.JWT_SECRET,
+            { expiresIn: '30d' },
+        )
+
+        response.json({
+            user,
+            token,
+        })
+
+    } catch (error) {
+        response.json({ message: 'нет доступа.' })
+    }
 }
